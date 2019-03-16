@@ -84,8 +84,14 @@ class ContactData extends Component {
 
     };
 
-    inputChangeHandler = (event)  => {
+    inputChangeHandler = (event, formType)  => {
+      // Do deeply nested updating of a single value on change.
       console.log(event.target.value);
+      const updatedOrderForm =  {...this.state.orderForm};
+      const updatedFormEl = {...updatedOrderForm[formType]};
+      updatedFormEl.value = event.target.value;
+      updatedOrderForm[formType] = updatedFormEl;
+      this.setState({orderForm: updatedOrderForm})
     };
 
     render ()  {

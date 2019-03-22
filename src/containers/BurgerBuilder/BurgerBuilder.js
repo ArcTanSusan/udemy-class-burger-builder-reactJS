@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import { connect } from 'react-redux';
+
 import Aux from '../../hoc/Aux/Aux';
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
@@ -6,6 +8,7 @@ import Modal from '../../components/Navigation/SideDrawer/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import axios from '../../axios-orders';
 import Spinner from '../../components/Navigation/SideDrawer/UI/Spinner/Spinner';
+import * as actionTypes from '../../store/actions';
 
 const INGREDIENT_PRICES = {
   salad: 0.5,
@@ -22,12 +25,7 @@ class BurgerBuilder extends Component {
   //   this.state = {}
   // }
   state = {
-    ingredients: {
-      salad: 0,
-      bacon: 0,
-      cheese: 0,
-      meat: 0
-    },
+
     totalPrice: 0,
     purchaseable: false,
     purchasing: false,
@@ -126,7 +124,7 @@ class BurgerBuilder extends Component {
 
   render() {
     const disabledInfo = {
-      ...this.state.ingredients
+      ...this.props.ings
     };
     for (let key in disabledInfo) {
       disabledInfo[key] = disabledInfo[key] <=0
@@ -170,4 +168,16 @@ class BurgerBuilder extends Component {
   }
 }
 
-export default BurgerBuilder;
+const mapStateToProps = state => {
+  return {
+    ings: state.ingredients
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onIngredientAdded: (ingName) => dispatch({type: acitonTypes.ADD_INGREDIENT, ingredientName: ingName}),
+    onIngredientRemoved: (ingName) => dispatch({type: acitonTypes.REMOVE_INGREDIENT, ingredientName: ingName}),
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(BurgerBuilder, axios);
